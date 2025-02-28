@@ -3,71 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrix Code Effect</title>
+    <title>Spooky Words</title>
     <style>
         body {
-            margin: 0;
-            overflow: hidden;
-            background: black;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-color: black;
+            color: white;
+            font-family: 'Creepster', cursive;
+            font-size: 5vw;
         }
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+        .word {
+            opacity: 0;
+            transition: opacity 0.5s;
         }
     </style>
 </head>
 <body>
-    <canvas id="matrix"></canvas>
+    <div id="word" class="word"></div>
 
     <script>
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
+        const words = [
+            "ghost", "phantom", "haunt", "specter", "witch", "curse", "spirit", "monster",
+            "goblin", "zombie", "vampire", "crypt", "darkness", "grave", "nightmare", "eerie"
+        ];
 
-        // Set canvas dimensions to the window size
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        // Characters used in the effect
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+-=[]{}|;:,.<>?';
-        const charactersArray = characters.split('');
-
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-
-        const drops = Array(columns).fill(1);
-
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#0F0'; // Green text color
-            ctx.font = `${fontSize}px monospace`;
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = charactersArray[Math.floor(Math.random() * charactersArray.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
+        function getRandomWord() {
+            const index = Math.floor(Math.random() * words.length);
+            return words[index];
         }
 
-        setInterval(draw, 33); // Redraw every 33 milliseconds
+        function changeWord() {
+            const wordElement = document.getElementById('word');
+            wordElement.style.opacity = 0;
+            setTimeout(() => {
+                wordElement.textContent = getRandomWord();
+                wordElement.style.opacity = 1;
+            }, 500);
+        }
 
-        // Resize canvas on window resize
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            drops.length = Math.floor(canvas.width / fontSize);
-            drops.fill(1);
-        });
+        setInterval(changeWord, 2000);
+        changeWord();
     </script>
 </body>
 </html>
