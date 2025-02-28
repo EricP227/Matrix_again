@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spooky Words</title>
+    <title>Random Words</title>
     <style>
         body {
             display: flex;
@@ -12,10 +12,9 @@
             height: 100vh;
             background-color: black;
             color: white;
-            font-family: 'Creepster', cursive;
+            font-family: Arial, sans-serif;
             font-size: 5vw;
         }
-        @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
         .word {
             opacity: 0;
             transition: opacity 0.5s;
@@ -26,27 +25,34 @@
     <div id="word" class="word"></div>
 
     <script>
-        const words = [
-            "ghost", "phantom", "haunt", "specter", "witch", "curse", "spirit", "monster",
-            "goblin", "zombie", "vampire", "crypt", "darkness", "grave", "nightmare", "eerie"
-        ];
-
-        function getRandomWord() {
-            const index = Math.floor(Math.random() * words.length);
-            return words[index];
+        async function fetchWords() {
+            const response = await fetch('https://raw.githubusercontent.com/dwyl/english-words/master/words.txt');
+            const data = await response.text();
+            return data.split('\n');
         }
 
-        function changeWord() {
-            const wordElement = document.getElementById('word');
-            wordElement.style.opacity = 0;
-            setTimeout(() => {
-                wordElement.textContent = getRandomWord();
-                wordElement.style.opacity = 1;
-            }, 500);
+        async function main() {
+            const words = await fetchWords();
+
+            function getRandomWord() {
+                const index = Math.floor(Math.random() * words.length);
+                return words[index].trim();
+            }
+
+            function changeWord() {
+                const wordElement = document.getElementById('word');
+                wordElement.style.opacity = 0;
+                setTimeout(() => {
+                    wordElement.textContent = getRandomWord();
+                    wordElement.style.opacity = 1;
+                }, 500);
+            }
+
+            setInterval(changeWord, 2000);
+            changeWord();
         }
 
-        setInterval(changeWord, 2000);
-        changeWord();
+        main();
     </script>
 </body>
 </html>
